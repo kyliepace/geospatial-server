@@ -1,0 +1,13 @@
+{
+  "name": "docker-node-boilerplate-basic",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index",
+    "start": "node index"
+  },
+  "keywords": [],
+  "author": "Gustavo Morales",
+  "license": "ISC"
+}
