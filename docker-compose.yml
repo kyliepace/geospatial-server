@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   node_basic:
-    image: node_basic
+    image: gmoralesc/node_basic
     build: .
     ports:
       - 3000:3000

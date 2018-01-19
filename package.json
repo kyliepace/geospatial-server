@@ -9,5 +9,8 @@
   },
   "keywords": [],
   "author": "Gustavo Morales",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.14.11"
+  }
 }
