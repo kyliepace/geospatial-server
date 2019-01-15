@@ -11,6 +11,6 @@
   "author": "Gustavo Morales",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^1.14.11"
+    "nodemon": "^1.18.9"
   }
 }
