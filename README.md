@@ -1,10 +1,13 @@
-# Node JS boilerplate with Docker 
+# Node JS boilerplate with Docker
 
-Simple empty Node JS project to run with Docker
+- Simple Web Server
+- MongoDB database (You can change this in the docker-compose (2) file)
+- Nodemon for Development
 
 ## Requirements
+
 - Docker
-- Node 8 and npm 5 (You can change this in the Dockerfile base image)
+- Node 10 and npm 5 (You can change this in the Dockerfile (1) image file)
 
 ## Installation
 
@@ -14,20 +17,31 @@ Simple empty Node JS project to run with Docker
 
 2. Go to the project folder and up the enviroment
 
+`cd node-basic-boilerplate-docker`
 `docker-compose up`
 
-Nodemon will looking for changes in the directory and restart the app
+The app will run in development mode and Nodemon will looking for changes in the directory and restart the app
 
 3. If you want to run command inside the container
 
 In a new terminal session:
 
-3a. Identify the name of the container: `docker container ls`
+A. Identify the name of the container:
 
-3b. Run the command: `docker container exec npm test` (The last argument is the command) or for example: `docker container exec npm install eslint --global`
+`docker container ls`
 
-## Configuration
+B. Run the command:
 
-- Dockerfile: Docker image
-- docker-compose.yml: Docker services
-- package.json: npm scripts
+`docker container [name] exec npm test`
+
+Another example:
+
+`docker container [name] exec npm install eslint --global`
+
+(The last argument is the command)
+
+## Configuration files
+
+1. Dockerfile: Docker image
+2. docker-compose.yml: Docker services
+3. package.json: npm scripts
