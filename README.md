@@ -32,11 +32,11 @@ A. Identify the name of the container:
 
 B. Run the command:
 
-`docker container [name] exec npm test`
+`docker exec [name] npm test`
 
 Another example:
 
-`docker container [name] exec npm install eslint --global`
+`docker exec [name] npm install eslint --global`
 
 (The last argument is the command)
 
