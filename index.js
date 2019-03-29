@@ -1,13 +1,39 @@
-const http = require("http");
+const express = require('express')
+const bodyParser = require('body-parser')
+const MongoClient = require('mongodb').MongoClient
 
-const port = 3000;
+const dbName = process.env.NODE_ENV === 'dev' ? 'database-test' : 'database' 
+const url = `mongodb://mongo:27017`
+const options = {
+  useNewUrlParser: true, 
+  reconnectTries: 60, 
+  reconnectInterval: 1000
+}
+const routes = require('./routes/routes.js')
+const port = process.env.PORT || 3000
+const app = express()
+const http = require('http').Server(app)
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use('/', (req, res) => {
   res.end("Hello world\n");
 });
+app.use('/api', routes)
+app.use((req, res) => {
+  res.status(404)
+})
 
-server.listen(port, () => {
-  console.log(`Server running at port:${port}/`);
-});
+MongoClient.connect(url, options, (err, database) => {
+  if (err) {
+    console.log(`FATAL MONGODB CONNECTION ERROR: ${err}:${err.stack}`)
+    process.exit(1)
+  }
+  app.locals.db = database.db('api')
+  http.listen(port, () => {
+    console.log("Listening on port " + port)
+    app.emit('APP_STARTED')
+  })
+})
+
+module.exports = app

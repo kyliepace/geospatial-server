@@ -1,7 +1,10 @@
 version: '3.3'
 services:
   db:
+    container_name: mongo
     image: mongo
+    ports:
+      - "27017:27017"
   node_basic:
     image: gmoralesc/node_basic
     build: .
