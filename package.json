@@ -1,5 +1,5 @@
 {
-  "name": "docker-node-boilerplate-basic",
+  "name": "geospatial-server-training",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,8 +8,8 @@
     "start": "node index"
   },
   "keywords": [],
-  "author": "Gustavo Morales",
-  "license": "ISC",
+  "author": "Kylie Pace",
+  "license": "UNLICENSED",
   "devDependencies": {
     "nodemon": "^1.18.9"
   }
