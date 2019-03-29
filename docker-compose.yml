@@ -4,8 +4,11 @@ services:
     container_name: mongo
     image: mongo
     ports:
-      - "27017:27017"
+      - "5432:27017"
+    volumes:
+      - /data/docker/maps:/data/db
   node_basic:
+    container_name: node_app
     image: gmoralesc/node_basic
     build: .
     ports:

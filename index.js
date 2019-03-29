@@ -17,7 +17,17 @@ const http = require('http').Server(app)
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/', (req, res) => {
-  res.end("Hello world\n");
+
+  MongoClient.connect(url, function (err, client) {
+    if (err) return next(err);    
+    var db = client.db('node_app')
+
+    if (err) return next(err);
+    res.end('helloooo')
+  	
+  }); 
+
+  //res.end("Hello world\n");
 });
 app.use('/api', routes)
 app.use((req, res) => {
