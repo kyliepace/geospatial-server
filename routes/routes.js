@@ -1,7 +1,12 @@
 const express = require('express')
 const router = express.Router();
 
-router.get('/documents/all', (req, res, next) => {
+router.get('/', (req, res, next) => {
+    // database connection available at req.app.locals.db
+    const db = req.app.locals.db;
+    db.collection('geojson').insertOne({name: 'test'}, (err, r) => {
+        console.log(r)
+    })
     next();
 });
 

@@ -3,10 +3,10 @@ services:
   db:
     container_name: mongo
     image: mongo
+    volumes:
+      - mongo_volume:/data/db
     ports:
       - "5432:27017"
-    volumes:
-      - /data/docker/maps:/data/db
   node_basic:
     container_name: node_app
     image: gmoralesc/node_basic
@@ -18,3 +18,5 @@ services:
       - /usr/src/app/node_modules
     depends_on: 
       - db
+volumes:
+  mongo_volume:
