@@ -1,7 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { initDB } = require('./db');
+const { initDB } = require('./postgres');
 const routes = require('./routes/routes.js');
+const dataRoutes = require('./routes/data');
 const port = process.env.PORT || 3000;
 const app = express();
 const http = require('http').Server(app);
@@ -15,6 +16,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/api', routes);
+//app.use('/data', dataRoutes);
 app.use('/', (req, res) => {
   res.end('helloooo')  
 });
@@ -23,10 +25,13 @@ app.use('/', (req, res) => {
 // start the database and then the server
 initDB((err, database) => {
   if (err) {
-    console.log(`FATAL MONGODB CONNECTION ERROR: ${err}:${err.stack}`)
+    console.log(`FATAL DATABASE CONNECTION ERROR: ${err}:${err.stack}`)
     process.exit(1)
   }
-  app.locals.db = database.db('node_app');
+  app.locals.db = database;
+  //query(database)
+  //app.locals.db = databa
+  //app.locals.db = database.db('node_app');
   http.listen(port, () => {
     console.log("Listening on port " + port)
     app.emit('APP_STARTED')

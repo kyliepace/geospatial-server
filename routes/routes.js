@@ -1,43 +1,22 @@
 const express = require('express')
 const router = express.Router();
 const handleError = require('./handleError');
+const { query } = require('../postgres');
 
-router.get('/darkness', (req, res) => {
-  const db = req.app.locals.db;
-  return db.collection('geojson').findOne({name: 'darkness'}, (err, geojson) => {
-    if (err) { handleError(err, res) }
-    console.log('darkness polygon passed to client');
-    res.json(geojson);
-  });
-});
-
-router.get('/paths', (req, res) => {
-  const db = req.app.locals.db; 
-  return db.collection('geojson').find({type: 'path'}, { feature: true })
-  .toArray()
-  .then(paths => {
-    const featurePaths = paths.map(path => {
-      return path.feature
-    });
-    res.json({features: featurePaths});
-  })
-  .catch(err => handleError(err))
-});
-
-router.post('/path', (req, res) => {
-  const db = req.app.locals.db;
-  const proposedGeoJson = JSON.parse(req.body);
-
-  // parse to make sure correct geojson form
-  let pathGeoJson = {
-    type: 'Feature',
-    ... proposedGeoJson
-  };
-
-  return db.collection('geojson').insertOne(pathGeoJson, (err) => {
-    if (err) { handleError(err, res) }
-    res.sendStatus(200);
-  });
+router.get('/crime', async (req, res) => {
+  console.log('get crime data')
+  //const db = req.app.locals.db;
+  try {
+    const { lat, lng } = JSON.parse(req.query.point);  
+    let queryString = `SELECT ST_AsGeoJSON(point) AS point, category FROM bath_police ORDER BY ST_Distance(point, ST_MakePoint(${lng}, ${lat})) LIMIT 20;`
+    console.log(queryString);
+    let crimePoints = await query(queryString);
+    console.log(crimePoints.rows)
+    res.json(crimePoints.rows);
+  }
+  catch(err){
+    res.sendStatus(500);
+  }
 });
 
 module.exports = router;
