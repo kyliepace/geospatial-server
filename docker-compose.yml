@@ -1,12 +1,12 @@
 version: '3.3'
 services:
   db:
-    container_name: mongo
-    image: mongo
+    container_name: postgis
+    image: mdillon/postgis
     volumes:
-      - mongo_volume:/data/db
+      - postgres_data:/data/db
     ports:
-      - "5432:27017"
+      - "5432:5421"
   node_basic:
     container_name: node_app
     image: gmoralesc/node_basic
@@ -19,4 +19,4 @@ services:
     depends_on: 
       - db
 volumes:
-  mongo_volume:
+  postgres_data:

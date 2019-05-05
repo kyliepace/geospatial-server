@@ -10,9 +10,3 @@ Built with [Node JS boilerplate with Docker](https://github.com/gmoralesc/node-b
 `docker exec [name] npm test`
 
 `docker exec [name] npm install eslint --global`
-
-# Mongo commands
-
-To enter Mongo shell on Docker Mongo volume, run `docker exec -it mongo bash` then `mongo` to start mongo shell. Some useful commands include `show collections` and `use <db>`.
-
-To connect via Robo3T, connect to localhost at port 5432.

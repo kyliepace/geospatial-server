@@ -9,7 +9,6 @@ router.get('/crime', async (req, res) => {
   try {
     const { lat, lng } = JSON.parse(req.query.point);  
     let queryString = `SELECT ST_AsGeoJSON(point) AS point, category FROM bath_police ORDER BY ST_Distance(point, ST_MakePoint(${lng}, ${lat})) LIMIT 20;`
-    console.log(queryString);
     let crimePoints = await query(queryString);
     console.log(crimePoints.rows)
     res.json(crimePoints.rows);
