@@ -12,7 +12,7 @@ router.get('/darkness', (req, res) => {
 });
 
 router.get('/paths', (req, res) => {
-  const db = req.app.locals.db; 
+  const db = req.app.locals.db;
   return db.collection('geojson').find({type: 'path'}, { feature: true })
   .toArray()
   .then(paths => {
