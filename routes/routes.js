@@ -24,17 +24,11 @@ router.get('/paths', (req, res) => {
   .catch(err => handleError(err))
 });
 
-router.post('/path', (req, res) => {
+router.post('/paths', (req, res) => {
+  console.log('post request to paths')
   const db = req.app.locals.db;
-  const proposedGeoJson = JSON.parse(req.body);
-
-  // parse to make sure correct geojson form
-  let pathGeoJson = {
-    type: 'Feature',
-    ... proposedGeoJson
-  };
-
-  return db.collection('geojson').insertOne(pathGeoJson, (err) => {
+  const proposedGeoJson = req.body;
+  return db.collection('geojson').insertOne(proposedGeoJson, (err) => {
     if (err) { handleError(err, res) }
     res.sendStatus(200);
   });
