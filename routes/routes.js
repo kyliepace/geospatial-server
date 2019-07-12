@@ -4,7 +4,7 @@ const handleError = require('./handleError');
 
 router.get('/darkness', (req, res) => {
   const db = req.app.locals.db;
-  return db.collection('geojson').findOne({name: 'darkness'}, (err, geojson) => {
+  return db.collection('geojson').findOne({type: 'Polygon'}, (err, geojson) => {
     if (err) { handleError(err, res) }
     console.log('darkness polygon passed to client');
     res.json(geojson);
@@ -27,7 +27,8 @@ router.get('/paths', (req, res) => {
 router.post('/paths', (req, res) => {
   console.log('post request to paths')
   const db = req.app.locals.db;
-  const proposedGeoJson = req.body;
+
+  const proposedGeoJson = req.body.features[0].geometry;
   return db.collection('geojson').insertOne(proposedGeoJson, (err) => {
     if (err) { handleError(err, res) }
     res.sendStatus(200);
