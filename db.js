@@ -1,9 +1,9 @@
 const MongoClient = require('mongodb').MongoClient
 const url = `mongodb://mongo:27017`
-// const dbName = process.env.NODE_ENV === 'dev' ? 'database-test' : 'database' 
+// const dbName = process.env.NODE_ENV === 'dev' ? 'database-test' : 'database'
 const options = {
-  useNewUrlParser: true, 
-  reconnectTries: 60, 
+  useNewUrlParser: true,
+  reconnectTries: 60,
   reconnectInterval: 1000
 };
 

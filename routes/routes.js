@@ -1,38 +1,47 @@
-const express = require('express')
+const express = require('express');
 const router = express.Router();
+const turf = require('@turf/turf');
 const handleError = require('./handleError');
 
-router.get('/darkness', (req, res) => {
+router.get('/darkness', async (req, res) => {
   const db = req.app.locals.db;
-  return db.collection('geojson').findOne({type: 'Polygon'}, (err, geojson) => {
-    if (err) { handleError(err, res) }
-    console.log('darkness polygon passed to client');
-    res.json(geojson);
-  });
+  try {
+    const darkness = await db.collection('geojson').findOne({'name': 'darkness'});
+console.log(darkness)
+    return res.json(darkness.geometry);
+  }
+  catch(err){ handleError(err) }
 });
 
-router.get('/paths', (req, res) => {
+router.get('/paths', async (req, res) => {
   const db = req.app.locals.db;
-  return db.collection('geojson').find({type: 'path'}, { feature: true })
-  .toArray()
-  .then(paths => {
-    const featurePaths = paths.map(path => {
-      return path.feature
-    });
-    res.json({features: featurePaths});
-  })
-  .catch(err => handleError(err))
+  try {
+    const geojsons = await db.collection('geojson').find({ 'geometry.type': 'LineString' }).toArray();
+    console.log('geojsons found: ', geojsons.length)
+    // return res.json(geojson[0].geometry);
+
+    const pathToPolygon = turf.lineToPolygon(geojsons[0].geometry.coordinates[0]);
+    const darkness = await db.collection('geojson').findOne({'name': 'darkness'});
+    const difference = turf.difference(darkness.geometry, pathToPolygon);
+    console.log(difference)
+    return res.json(difference);
+
+  }
+  catch(err){ handleError(err) }
 });
 
-router.post('/paths', (req, res) => {
+router.post('/paths', async (req, res) => {
   console.log('post request to paths')
   const db = req.app.locals.db;
-
-  const proposedGeoJson = req.body.features[0].geometry;
-  return db.collection('geojson').insertOne(proposedGeoJson, (err) => {
-    if (err) { handleError(err, res) }
-    res.sendStatus(200);
-  });
+  const proposedGeoJson = {
+    name: req.body.name,
+    geometry: req.body.features[0].geometry
+  }
+  try{
+    await db.collection('geojson').insertOne(proposedGeoJson);
+    return res.sendStatus(200);
+  }
+  catch(err){ handleError(err)}
 });
 
 module.exports = router;
