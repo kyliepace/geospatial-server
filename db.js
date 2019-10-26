@@ -8,18 +8,20 @@ const options = {
 };
 
 let db;
-function initDB(callback) {
+async function initDB(callback) {
   if (db) {
     console.warn('Database is already connected')
     return callback(null, db);
   }
 
-  MongoClient.connect(url, options, (err, database) => {
-    if(err){ callback(err) }
+  try {
+    db = await MongoClient.connect(url, options);
     console.log('database initialized: ', url);
-    db = database;
     return callback(null, db);
-  });
+  }
+  catch(err){
+    return callback(err);
+  }
 };
 
 function getDB() {

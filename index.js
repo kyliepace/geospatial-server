@@ -26,7 +26,7 @@ initDB((err, database) => {
     console.log(`FATAL MONGODB CONNECTION ERROR: ${err}:${err.stack}`)
     process.exit(1)
   }
-  app.locals.db = database.db('node_app');
+  app.locals.db = database.db('map');
   http.listen(port, () => {
     console.log("Listening on port " + port)
     app.emit('APP_STARTED')
