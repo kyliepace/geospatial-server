@@ -13,7 +13,8 @@ router.get('/pipeline', async (req, res) => {
           "type": "Point",
           "coordinates": [ -2.364099, 51.382239 ]
         },
-        "maxDistance": 500000,
+        "minDistance": 5000, //5km
+        "maxDistance": 500000, // 500km
         "spherical": true,
         "distanceField": "distance"
       }
@@ -25,8 +26,24 @@ router.get('/pipeline', async (req, res) => {
       }
     }
   ]).toArray();
-  console.log(geojsons)
   return res.json(geojsons.map(({distance, geometry}) => { return {distance, geometry}} ));
+});
+
+router.post('/analysis/near', async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const distance = req.body.distance;
+    const query = { geometry: {'$near': {
+      '$geometry': {
+        type: 'Point',
+        coordinates: [-2.364099, 51.382239]
+      },
+      $maxDistance: parseInt(distance) // distance in meters
+    }}};
+    const geojsons = await db.collection('geojson').find(query).toArray();
+    return res.json(geojsons.map(({geometry}) => geometry));
+  }
+  catch(err) { handleError(err)}
 });
 
 // geospatial query
@@ -38,15 +55,6 @@ router.get('/analysis/:operation', async (req, res) => {
       case 'geoWithin':
         const bigPolygon = await db.collection('geojson').findOne({'name': 'darkness'});
         query = { geometry: {'$geoWithin': {'$geometry': bigPolygon.geometry }}};
-        break;
-      case 'near':
-        query = { geometry: {'$near': {
-          '$geometry': {
-            type: 'Point',
-            coordinates: [-2.364099, 51.382239]
-          },
-          $maxDistance: 500 // distance in meters
-        }}}
         break;
       case 'intersects':
         const { geometry } = await db.collection('geojson').findOne({'name': 'darkness'});
