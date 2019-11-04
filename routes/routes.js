@@ -29,6 +29,19 @@ router.get('/pipeline', async (req, res) => {
   return res.json(geojsons.map(({distance, geometry}) => { return {distance, geometry}} ));
 });
 
+router.get('/cut-out', async (req, res) => {
+  try {
+    const db = req.app.locals.db;
+    const { geometry: bigPolygon } = await db.collection('geojson').findOne({'name': 'darkness'});
+    const { geometry: smallPolygon } = await db.collection('geojson').findOne({'name': 'cheese-polygon'});
+    const mask = turf.polygon(bigPolygon.coordinates); // exterior rings
+    const polygon = turf.polygon(smallPolygon.coordinates); //interior rings
+    const cutOut = turf.mask(polygon, mask);
+    return res.json(cutOut.geometry);
+  }
+  catch(err) { handleError(err)}
+});
+
 router.post('/analysis/near', async (req, res) => {
   try {
     const db = req.app.locals.db;
@@ -60,6 +73,7 @@ router.get('/analysis/:operation', async (req, res) => {
         const { geometry } = await db.collection('geojson').findOne({'name': 'darkness'});
         query = { geometry: {'$geoIntersects': {'$geometry': geometry }}};
         break;
+
       default:
         break;
     };
